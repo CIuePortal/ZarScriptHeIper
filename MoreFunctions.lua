@@ -232,17 +232,14 @@ local fbcheck = false
 local ticks = 0
 local airvelo = {
     on_pre_update = function() 
-
         ----FB Check
-
         local ent = world.entities()
 
         for i = 1, #ent do
             local fbEnt = ent[i]
-    
-                    local distance = player.distance_to_entity(fbEnt)
-                    if not world.is_player(fbEnt) and world.name(fbEnt) == "Fireball" then
-                        if distance <= 5 then
+                local distance = player.distance_to_entity(fbEnt)
+                if not world.is_player(fbEnt) and world.name(fbEnt) == "Fireball" then
+                    if distance <= 5 then
                         fbcheck = true
                     end
                 end
@@ -270,35 +267,35 @@ local airvelo = {
                 reenable = 0
             end
 
-    if fbcheck then
-        fbticks = 0
-        fbtick = true
-    end
-    if fbtick and not fbcheck then
-        fbticks = fbticks + 1
-    end
-    if fbticks == 8 then
-        fbtick = false
-        fbticks = 0
-    end
+        if fbcheck then
+            fbticks = 0
+            fbtick = true
+        end
+        if fbtick and not fbcheck then
+            fbticks = fbticks + 1
+        end
+        if fbticks == 8 then
+            fbtick = false
+            fbticks = 0
+        end
     
         ----AirVelo
 
-    if not player.on_ground() then
-        ticks = ticks + 1
-    end
-    if player.on_ground() then
-        ticks = 0
-    end
+        if not player.on_ground() then
+            ticks = ticks + 1
+        end
+        if player.on_ground() then
+            ticks = 0
+        end
 
-    if ticks >= module_manager.option(name, "00 Distance") then
-        velo = true
-    end
-    if ticks == 0 or player.on_ground() then
-        velo = false
-    end
+        if ticks >= module_manager.option(name, "00 Distance") then
+            velo = true
+        end
+         if ticks == 0 or player.on_ground() then
+            velo = false
+        end
 
-    player.message('.velocity vertical 0')
+        player.message('.velocity vertical 0')
     end,
     
     on_receive_packet = function(t)
@@ -320,19 +317,19 @@ local airvelo = {
         return t
     end,
 
-    on_send_packet = function(t)
+    on_send_packet = function(e)
         if recivedPacket2 then
             player.send_packet(0x09, 5)
             recivedPacket2 = false
         end
         if recivedPacket then
-            if t.packet_id == 0x02 then
-                if t.action == 2 then
-                    t.cancel = true
+            if e.packet_id == 0x02 then
+                if e.action == 2 then
+                    e.cancel = true
                 end
             end
         end
-        return t
+        return e
     end,
 
     on_player_join = function()
