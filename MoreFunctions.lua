@@ -315,7 +315,6 @@ local airvelo = {
                 t.cancel = true
                 local mx,my,mz = player.motion()
                 player.set_motion(mx, t.motion_y / 8000.0, mz)
-                end
             end
         end
         return t
